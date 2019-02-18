@@ -1,4 +1,5 @@
 <?php
+
   // $current représente le chemin en cours (sans le dosssier racine "storage")
   // $parent représente le chemin du dossier parent (s'il existe)
   if (!isset($_REQUEST["current"]))
@@ -17,6 +18,16 @@
 
   // $directoryRealPath représente le chemin physique
   $directoryRealPath = realpath("../storage" . $current);
+
+  // création d'un nouveau dossier s'il est renseigné et qu'il n'existe pas
+  if (isset($_REQUEST["newDir"]))
+  {
+    $newDir = $directoryRealPath . DIRECTORY_SEPARATOR . $_REQUEST["newDir"];
+    if (!file_exists($newDir))
+    {
+      mkdir($newDir);
+    }
+  }
 
   // s'il s'agit d'un fichier on lance son téléchargement
   if (is_file($directoryRealPath))
@@ -102,7 +113,8 @@
             <div class="field">
               <label class="label">Nouveau dossier</label>
               <div class="control">
-                <input class="input" type="text" placeholder="Nom du dossier">
+                <input name="current" type="hidden" value="<?= $current ?>" />
+                <input name="newDir" class="input" type="text" placeholder="Nom du dossier">
               </div>
             </div>
             <div class="field is-grouped">
